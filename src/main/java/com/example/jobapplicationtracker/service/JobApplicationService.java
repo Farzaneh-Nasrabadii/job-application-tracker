@@ -2,6 +2,7 @@ package com.example.jobapplicationtracker.service;
 
 import com.example.jobapplicationtracker.dto.JobApplicationRequest;
 import com.example.jobapplicationtracker.dto.JobApplicationResponse;
+import com.example.jobapplicationtracker.exception.ResourceNotFoundException;
 import com.example.jobapplicationtracker.model.ApplicationStatus;
 import com.example.jobapplicationtracker.model.JobApplication;
 import com.example.jobapplicationtracker.repository.JobApplicationRepository;
@@ -27,8 +28,7 @@ public class JobApplicationService {
         JobApplication saved = repository.save(application);
         return mapToResponse(saved);
     }
-
-    @Transactional(readOnly = true)
+@Transactional(readOnly = true)
     public Page<JobApplicationResponse> getAllApplications(String company, ApplicationStatus status, Pageable pageable) {
         Page<JobApplication> page;
         if (company != null && !company.isBlank()) {
@@ -40,17 +40,17 @@ public class JobApplicationService {
         }
         return page.map(this::mapToResponse);
     }
-@Transactional(readOnly = true)
+
+    @Transactional(readOnly = true)
     public JobApplicationResponse getApplicationById(Long id) {
         JobApplication application = repository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Job application not found with id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Job application not found with id: " + id));
         return mapToResponse(application);
     }
-
-    @Transactional
+@Transactional
     public JobApplicationResponse updateApplication(Long id, JobApplicationRequest request) {
         JobApplication application = repository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Job application not found with id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Job application not found with id: " + id));
 
         application.setCompanyName(request.getCompanyName());
         application.setJobTitle(request.getJobTitle());
@@ -68,7 +68,7 @@ public class JobApplicationService {
 @Transactional
     public void deleteApplication(Long id) {
         if (!repository.existsById(id)) {
-            throw new RuntimeException("Job application not found with id: " + id);
+            throw new ResourceNotFoundException("Job application not found with id: " + id);
         }
         repository.deleteById(id);
     }
