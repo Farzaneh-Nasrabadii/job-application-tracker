@@ -35,6 +35,10 @@ public class JobApplication {
 
     private LocalDate appliedDate;
 
+    private String resumeFileName;
+
+    private String resumeFileType;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
@@ -87,6 +91,10 @@ public class JobApplication {
     public void setNotes(String notes) { this.notes = notes; }
     public LocalDate getAppliedDate() { return appliedDate; }
     public void setAppliedDate(LocalDate appliedDate) { this.appliedDate = appliedDate; }
+    public String getResumeFileName() { return resumeFileName; }
+    public void setResumeFileName(String resumeFileName) { this.resumeFileName = resumeFileName; }
+    public String getResumeFileType() { return resumeFileType; }
+    public void setResumeFileType(String resumeFileType) { this.resumeFileType = resumeFileType; }
     public User getUser() { return user; }
     public void setUser(User user) { this.user = user; }
     public LocalDateTime getCreatedAt() { return createdAt; }
