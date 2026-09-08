@@ -1,67 +1,43 @@
 package com.jobtracker.jobapplicationtracker.application;
-
-import com.jobtracker.jobapplicationtracker.user.User;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.web.PageableDefault;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.*;
-
-@RestController
-@RequestMapping("/api/v1/applications")
-public class JobApplicationController {
-
+import com.jobtracker.jobapplicationtracker.user.User; import org.springframework.data.domain.Page; import org.springframework.data.domain.Pageable; import org.springframework.http.HttpStatus; import org.springframework.http.ResponseEntity; import org.springframework.security.core.annotation.AuthenticationPrincipal; import org.springframework.web.bind.annotation.*; import org.springframework.web.multipart.MultipartFile;
+@RestController @RequestMapping("/api/v1/applications") public class JobApplicationController {
     private final JobApplicationService service;
 
     public JobApplicationController(JobApplicationService service) {
         this.service = service;
     }
 
-    @GetMapping
-    public ResponseEntity<Page<JobApplicationResponse>> getAll(
+    @PostMapping
+    public ResponseEntity<JobApplicationResponse> createApplication(
             @AuthenticationPrincipal User user,
-            @RequestParam(required = false) ApplicationStatus status,
-            @RequestParam(required = false) String companyName,
-            @PageableDefault(size = 10, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable
-    ) {
-        JobApplicationFilter filter = new JobApplicationFilter(status, companyName);
-        return ResponseEntity.ok(service.getAllApplications(user, filter, pageable));
+            @RequestBody JobApplicationRequest request) {
+        JobApplicationResponse response = service.createApplication(user, request);
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
-    @PostMapping
-    public ResponseEntity<JobApplicationResponse> create(
+    @GetMapping
+    public ResponseEntity<Page<JobApplicationResponse>> getAllApplications(
             @AuthenticationPrincipal User user,
-            @RequestBody JobApplicationRequest request
-    ) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(service.createApplication(user, request));
+            JobApplicationFilter filter,
+            Pageable pageable) {
+        Page<JobApplicationResponse> responses = service.getAllApplications(user, filter, pageable);
+        return ResponseEntity.ok(responses);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<JobApplicationResponse> getById(
+    public ResponseEntity<JobApplicationResponse> getApplicationById(
             @AuthenticationPrincipal User user,
-            @PathVariable Long id
-    ) {
-        return ResponseEntity.ok(service.getApplicationById(user, id));
+            @PathVariable Long id) {
+        JobApplicationResponse response = service.getApplicationById(user, id);
+        return ResponseEntity.ok(response);
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<JobApplicationResponse> update(
+    @PostMapping("/{id}/resume")
+    public ResponseEntity<JobApplicationResponse> uploadResume(
             @AuthenticationPrincipal User user,
             @PathVariable Long id,
-            @RequestBody JobApplicationRequest request
-    ) {
-        return ResponseEntity.ok(service.updateApplication(user, id, request));
-    }
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(
-            @AuthenticationPrincipal User user,
-            @PathVariable Long id
-    ) {
-        service.deleteApplication(user, id);
-        return ResponseEntity.noContent().build();
+            @RequestParam("file") MultipartFile file) {
+        JobApplicationResponse response = service.uploadResume(user, id, file);
+        return ResponseEntity.ok(response);
     }
 }

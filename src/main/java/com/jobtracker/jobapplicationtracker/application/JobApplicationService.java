@@ -1,18 +1,12 @@
 package com.jobtracker.jobapplicationtracker.application;
-
-import com.jobtracker.jobapplicationtracker.user.User;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-@Service
-public class JobApplicationService {
-
+import com.jobtracker.jobapplicationtracker.service.FileStorageService; import com.jobtracker.jobapplicationtracker.user.User; import org.springframework.data.domain.Page; import org.springframework.data.domain.Pageable; import org.springframework.stereotype.Service; import org.springframework.transaction.annotation.Transactional; import org.springframework.web.multipart.MultipartFile;
+@Service public class JobApplicationService {
     private final JobApplicationRepository repository;
+    private final FileStorageService fileStorageService;
 
-    public JobApplicationService(JobApplicationRepository repository) {
+    public JobApplicationService(JobApplicationRepository repository, FileStorageService fileStorageService) {
         this.repository = repository;
+        this.fileStorageService = fileStorageService;
     }
 
     @Transactional(readOnly = true)
@@ -70,6 +64,18 @@ public class JobApplicationService {
         JobApplication application = repository.findByIdAndUserId(id, user.getId())
                 .orElseThrow(() -> new IllegalArgumentException("Application not found with id: " + id));
         repository.delete(application);
+    }
+
+    @Transactional
+    public JobApplicationResponse uploadResume(User user, Long applicationId, MultipartFile file) {
+        JobApplication application = repository.findByIdAndUserId(applicationId, user.getId())
+                .orElseThrow(() -> new IllegalArgumentException("Application not found with id: " + applicationId));
+
+        String fileName = fileStorageService.storeFile(file);
+        application.setResumeFileName(fileName);
+        application.setResumeFileType(file.getContentType());
+
+        return toResponse(repository.save(application));
     }
 
     private JobApplicationResponse toResponse(JobApplication app) {
