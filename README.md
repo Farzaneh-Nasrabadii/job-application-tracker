@@ -1,110 +1,122 @@
-
-
 # Job Application Tracker API
 
 A RESTful backend application for managing and tracking job applications throughout the recruitment process.
 
-Built with **Java 21**, **Spring Boot 3**, **Spring Security**, **JWT**, and **PostgreSQL**, this project demonstrates backend development practices including authentication, REST API design, data persistence, validation, file handling, pagination, filtering, and API documentation.
+Built with **Java 21** and **Spring Boot 3**, the project demonstrates practical backend development with **Spring Security, JWT authentication, PostgreSQL, JPA/Hibernate, validation, file handling, pagination, filtering, testing, and OpenAPI documentation**.
 
 ## ✨ Features
 
-- 🔐 **JWT Authentication**
-  - User registration and login
-  - Stateless authentication
-  - Password hashing with Spring Security
-  - Protected API endpoints
+### 🔐 Authentication & Security
 
-- 💼 **Job Application Management**
-  - Create, read, update, and delete applications
-  - Track application status
-  - Store company, job title, salary, applied date, and notes
-  - Associate applications with authenticated users
+* User registration and login
+* Stateless JWT-based authentication
+* Secure password hashing with Spring Security
+* Protected API endpoints
+* User-specific application data
 
-- 📄 **Resume File Management**
-  - Upload resume files
-  - Attach resumes to job applications
-  - Support for PDF and DOCX documents
-  - Local file storage
+### 💼 Job Application Management
 
-- 🔎 **Pagination & Filtering**
-  - Paginated application lists
-  - Sorting
-  - Filtering by application status
-  - Multi-field filtering
+* Create, read, update, and delete job applications
+* Track application status throughout the recruitment process
+* Store company, job title, salary, applied date, and notes
+* Associate applications with authenticated users
 
-- 📚 **API Documentation**
-  - OpenAPI 3 documentation
-  - Interactive Swagger UI
-  - API endpoint testing directly from the browser
+### 📄 Resume Management
 
-- 🐳 **Docker Support**
-  - Dockerized application
-  - PostgreSQL container
-  - Docker Compose configuration for local development
+* Upload resume files for job applications
+* Download and delete attached resumes
+* Support for PDF and DOCX files
+* Local file storage
 
-- 🧪 **Testing**
-  - H2 database for tests
-  - Spring Boot testing support
-  - Spring Security testing support
+### 🔎 Pagination, Sorting & Filtering
+
+* Paginated application lists
+* Sorting by supported fields
+* Filtering by application status
+* Multi-field filtering
+
+### 📚 API Documentation
+
+* OpenAPI 3 specification
+* Interactive Swagger UI
+* API endpoint exploration and testing directly from the browser
+
+### 🐳 Docker Support
+
+* Dockerized application
+* PostgreSQL container
+* Docker Compose configuration for local development
+
+### 🧪 Testing
+
+* Automated tests with Spring Boot
+* H2 in-memory database for testing
+* Spring Security testing support
 
 ## 🛠 Tech Stack
 
-| Category | Technology |
-|---|---|
-| Language | Java 21 |
-| Framework | Spring Boot 3.2 |
-| Security | Spring Security + JWT |
-| Database | PostgreSQL |
-| Testing Database | H2 |
-| Persistence | Spring Data JPA / Hibernate |
-| Object Mapping | MapStruct |
-| Boilerplate Reduction | Lombok |
-| API Documentation | SpringDoc OpenAPI / Swagger UI |
-| Build Tool | Maven |
-| Containerization | Docker / Docker Compose |
+| Category              | Technology                     |
+| --------------------- | ------------------------------ |
+| Language              | Java 21                        |
+| Framework             | Spring Boot 3.2                |
+| Security              | Spring Security + JWT          |
+| Database              | PostgreSQL                     |
+| Testing Database      | H2                             |
+| Persistence           | Spring Data JPA / Hibernate    |
+| Object Mapping        | MapStruct                      |
+| Boilerplate Reduction | Lombok                         |
+| API Documentation     | SpringDoc OpenAPI / Swagger UI |
+| Build Tool            | Maven                          |
+| Containerization      | Docker / Docker Compose        |
 
 ## 🏗 Architecture
 
-The application follows a layered backend architecture:
+The application follows a **layered architecture** that separates API handling, business logic, data access, and supporting components.
 
 ```text
+Client
+  │
+  ▼
 Controller
-    ↓
+  │
+  ▼
 Service
-    ↓
+  │
+  ▼
 Repository
-    ↓
-Database
-````
+  │
+  ▼
+PostgreSQL
+```
 
-Additional layers/components handle:
+Additional components handle cross-cutting concerns such as:
 
-* JWT authentication
+* JWT authentication and security
 * Request validation
-* DTO mapping
-* Exception handling
+* DTO mapping with MapStruct
+* Global exception handling
 * File storage
-* Security configuration
+* Application configuration
 
 ### Main Components
 
 ```text
 src/main/java/com/jobtracker/jobapplicationtracker
 
+├── config
 ├── controller
-├── service
-├── repository
-├── entity
 ├── dto
-├── mapper
-├── security
+├── entity
 ├── exception
-└── config
+├── mapper
+├── repository
+├── security
+└── service
 ```
 
 ## 🔐 Authentication Flow
 
-The API uses JWT-based stateless authentication.
+The API uses **stateless JWT-based authentication**.
 
 ```text
 Register
@@ -124,7 +136,7 @@ Authenticated requests use:
 Authorization: Bearer <JWT_TOKEN>
 ```
 
-## 📌 Example API Endpoints
+## 📌 API Endpoints
 
 ### Authentication
 
@@ -161,19 +173,19 @@ After starting the application, Swagger UI is available at:
 http://localhost:8080/swagger-ui/index.html
 ```
 
-OpenAPI documentation:
+OpenAPI specification:
 
 ```text
 http://localhost:8080/v3/api-docs
 ```
 
-Swagger UI allows you to explore and test the available REST endpoints interactively.
+Swagger UI provides an interactive interface for exploring and testing the REST API.
 
 ## 🚀 Getting Started
 
 ### Prerequisites
 
-Make sure you have the following installed:
+Make sure the following are installed:
 
 * Java 21
 * Maven 3.8+
@@ -190,13 +202,13 @@ cd job-application-tracker
 
 ### 2. Start PostgreSQL
 
-Using Docker Compose:
+Start the PostgreSQL container using Docker Compose:
 
 ```bash
 docker compose up -d
 ```
 
-Check running containers:
+Check the running containers:
 
 ```bash
 docker ps
@@ -235,21 +247,21 @@ JWT_SECRET=your_secret_key
 JWT_EXPIRATION=86400000
 ```
 
-For security reasons, sensitive credentials should not be committed to the repository.
+For security reasons, sensitive credentials should never be committed to the repository.
 
 ## 🧪 Running Tests
 
-Run the test suite with:
+Run the complete test suite with:
 
 ```bash
 mvn test
 ```
 
-The test environment uses **H2** to avoid requiring a separate PostgreSQL database.
+The test environment uses an **H2 in-memory database**, so a separate PostgreSQL instance is not required for running tests.
 
 ## 🐳 Running with Docker Compose
 
-The recommended local development setup uses Docker Compose:
+The application can also be built and started together with its supporting services:
 
 ```bash
 docker compose up --build
@@ -292,12 +304,12 @@ job-application-tracker/
 
 ## 🎯 Project Goals
 
-This project was built to practice and demonstrate real-world backend development concepts, including:
+This project was developed to practice and demonstrate practical backend development concepts, including:
 
 * RESTful API design
 * Authentication and authorization
-* Secure password handling
 * JWT-based security
+* Secure password handling
 * Relational database design
 * JPA and Hibernate
 * DTO-based API design
@@ -305,14 +317,14 @@ This project was built to practice and demonstrate real-world backend developmen
 * Input validation
 * Exception handling
 * File upload and storage
-* Pagination and filtering
-* API documentation
+* Pagination, sorting, and filtering
+* OpenAPI documentation
 * Docker-based development
 * Automated testing
 
 ## 🔮 Future Improvements
 
-Planned improvements include:
+Potential future improvements include:
 
 * Cloud-based file storage
 * Email notifications for application deadlines
@@ -320,8 +332,8 @@ Planned improvements include:
 * Application analytics and statistics
 * Refresh token support
 * CI/CD pipeline
-* Integration tests with Testcontainers
-* Deployment to a cloud platform
+* Integration testing with Testcontainers
+* Cloud deployment
 
 ## 👩‍💻 Author
 
@@ -334,5 +346,3 @@ Aspiring Backend Developer focused on **Java, Spring Boot, and backend developme
 ---
 
 ⭐ If you find this project useful, feel free to explore the code and follow the repository.
-
-```
