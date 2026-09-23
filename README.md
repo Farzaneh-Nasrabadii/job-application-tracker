@@ -322,19 +322,6 @@ This project was developed to practice and demonstrate practical backend develop
 * Docker-based development
 * Automated testing
 
-## 🔮 Future Improvements
-
-Potential future improvements include:
-
-* Cloud-based file storage
-* Email notifications for application deadlines
-* Advanced search and filtering
-* Application analytics and statistics
-* Refresh token support
-* CI/CD pipeline
-* Integration testing with Testcontainers
-* Cloud deployment
-
 ## 👩‍💻 Author
 
 **Farzaneh Nasrabadi**
